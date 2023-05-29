@@ -53,7 +53,6 @@ export interface CarouselProps {
         label: string
     ) => React.ReactNode;
     renderItem: (item: React.ReactNode, options?: { isSelected: boolean; isPrevious: boolean }) => React.ReactNode;
-    renderThumbs: (children: React.ReactChild[]) => React.ReactChild[];
     selectedItem: number;
     showArrows: boolean;
     showStatus: boolean;

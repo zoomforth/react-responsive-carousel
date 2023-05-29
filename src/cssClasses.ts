@@ -13,13 +13,15 @@ export default {
             'carousel-slider': isSlider,
         }),
 
-    WRAPPER: (isSlider: boolean, axis?: 'horizontal' | 'vertical') =>
-        classNames({
+    WRAPPER: (isSlider: boolean, axis?: 'horizontal' | 'vertical', adjustPosition?: boolean) => {
+        return classNames({
             'thumbs-wrapper': !isSlider,
             'slider-wrapper': isSlider,
             'axis-horizontal': axis === 'horizontal',
             'axis-vertical': axis !== 'horizontal',
-        }),
+            'adjust-placement': adjustPosition,
+        });
+    },
 
     SLIDER: (isSlider: boolean, isSwiping?: boolean) =>
         classNames({

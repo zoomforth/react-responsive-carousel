@@ -30,6 +30,11 @@
         display: none;
     }
 
+    &.control-overflow {
+        background: red;
+        justify-content: flex-start;
+    }
+
     &.control-prev {
         left: 0;
         &:before {
@@ -83,6 +88,15 @@
     .thumbs-wrapper {
         margin: 20px;
         overflow: hidden;
+
+        .slide-nav-button-wrapper {
+            display: flex;
+        }
+
+        &.adjust-placement {
+            justify-content: start;
+            margin-left: 5px;
+        }
     }
 
     .thumbs {
@@ -116,6 +130,10 @@
         img {
             vertical-align: top;
         }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     &.carousel-slider {
@@ -140,6 +158,7 @@
     }
 
     .slider-wrapper {
+        padding: 5px;
         overflow: hidden;
         margin: auto;
         width: 100%;
@@ -206,10 +225,10 @@
         }
 
         iframe {
-            display: inline-block;
-            width: calc(100% - 80px);
-            margin: 0 40px 40px;
-            border: 0;
+            // display: inline-block;
+            // width: calc(100% - 80px);
+            // margin: 0 40px 40px;
+            // border: 0;
         }
 
         .legend {

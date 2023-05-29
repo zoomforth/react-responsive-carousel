@@ -129,12 +129,13 @@ export default class Thumbs extends Component<Props, State> {
             return;
         }
 
-        const total = Children.count(this.props.children);
+        const total = Children.count(this.props.children) + 1;
         const wrapperSize = this.itemsWrapperRef.clientWidth;
         const itemSize = this.props.thumbWidth ? this.props.thumbWidth : outerWidth(this.thumbsRef[0]);
         const visibleItems = Math.floor(wrapperSize / itemSize);
         const showArrows = visibleItems < total;
         const lastPosition = showArrows ? total - visibleItems : 0;
+
         this.setState((_state, props) => ({
             itemSize,
             visibleItems,
@@ -243,20 +244,26 @@ export default class Thumbs extends Component<Props, State> {
         return this.props.children.map((img, index) => {
             const itemClass = klass.ITEM(false, index === this.state.selectedItem);
 
-            const thumbProps = {
-                key: index,
-                ref: (e: HTMLLIElement) => this.setThumbsRef(e, index),
-                className: itemClass,
-                onClick: this.handleClickItem.bind(this, index, this.props.children[index]),
-                onKeyDown: this.handleClickItem.bind(this, index, this.props.children[index]),
-                'aria-label': `${this.props.labels.item} ${index + 1}`,
-                style: { width: this.props.thumbWidth },
-            };
+            const isSelected = index === this.state.selectedItem;
 
             return (
-                <li {...thumbProps} role="button" tabIndex={0}>
+                <a
+                    style={{ width: this.props.thumbWidth }}
+                    className={itemClass}
+                    ref={(e: HTMLLIElement) => this.setThumbsRef(e, index)}
+                    onClick={this.handleClickItem.bind(this, index, this.props.children[index])}
+                    onKeyDown={this.handleClickItem.bind(this, index, this.props.children[index])}
+                    value={index}
+                    key={index}
+                    role="tab"
+                    tabIndex={isSelected ? '0' : '-1'}
+                    id={`slide-${index}-tab`}
+                    aria-controls={`slide-${index + 1}`}
+                    aria-selected={isSelected ? true : false}
+                >
                     {img}
-                </li>
+                    <span className="hidden-content"> Go to slide {index + 1}</span>
+                </a>
             );
         });
     }
@@ -298,16 +305,26 @@ export default class Thumbs extends Component<Props, State> {
 
         return (
             <div className={klass.CAROUSEL(false)}>
-                <div className={klass.WRAPPER(false)} ref={this.setItemsWrapperRef}>
-                    <button
-                        type="button"
-                        className={klass.ARROW_PREV(!hasPrev)}
-                        onClick={() => this.slideRight()}
-                        aria-label={this.props.labels.leftArrow}
-                    />
+                <div className={klass.WRAPPER(false, 'vertical', this.state.showArrows)} ref={this.setItemsWrapperRef}>
+                    <div className="slide-nav-button-wrapper">
+                        <button
+                            type="button"
+                            className={klass.ARROW_PREV(!hasPrev)}
+                            onClick={() => this.slideRight()}
+                            aria-label={this.props.labels.leftArrow}
+                        />
+                        <button
+                            type="button"
+                            className={klass.ARROW_NEXT(!hasNext)}
+                            onClick={() => this.slideLeft()}
+                            aria-label={this.props.labels.rightArrow}
+                        />
+                    </div>
+
                     {isSwipeable ? (
                         <Swipe
-                            tagName="ul"
+                            tagName="div"
+                            role="tablist"
                             className={klass.SLIDER(false, this.state.swiping)}
                             onSwipeLeft={this.slideLeft}
                             onSwipeRight={this.slideRight}
@@ -321,20 +338,15 @@ export default class Thumbs extends Component<Props, State> {
                             {this.renderItems()}
                         </Swipe>
                     ) : (
-                        <ul
+                        <div
+                            role="tablist"
                             className={klass.SLIDER(false, this.state.swiping)}
                             ref={(node: HTMLUListElement) => this.setItemsListRef(node)}
                             style={itemListStyles}
                         >
                             {this.renderItems()}
-                        </ul>
+                        </div>
                     )}
-                    <button
-                        type="button"
-                        className={klass.ARROW_NEXT(!hasNext)}
-                        onClick={() => this.slideLeft()}
-                        aria-label={this.props.labels.rightArrow}
-                    />
                 </div>
             </div>
         );
